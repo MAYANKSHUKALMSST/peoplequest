@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       { title: "PeopleQuest Data Services — HR & Staffing for Talent and Enterprises" },
       { name: "description", content: "PeopleQuest Data Services connects exceptional individuals with great careers and partners with corporates on RPO, executive search and workforce solutions across India." },
       { property: "og:title", content: "PeopleQuest Data Services" },
-      { property: "og:description", content: "Where talent meets opportunity — for individuals and corporates." },
+      { property: "og:description", content: "Building Organisations Through People — for individuals and corporates." },
     ],
   }),
   component: HomePage,
@@ -63,6 +63,51 @@ const corporatePerks = [
   { icon: Building2, title: "Enterprise RPO", desc: "Embedded recruitment teams that scale up and down with your hiring plan." },
 ];
 
+const MOCK_JOBS: Job[] = [
+  {
+    id: "mock-1",
+    title: "Senior Technical Recruiter",
+    department: "Talent Acquisition",
+    location: "Mumbai (Hybrid)",
+    job_type: "Full-time",
+    experience: "4-7 years",
+    salary_range: "₹12 - ₹18 LPA",
+    description: "We are seeking a senior technical recruiter to lead hiring for our top-tier product engineering clients. You will manage end-to-end talent search, candidate relations, and client alignment.",
+    requirements: "Experience in tech hiring, strong communication skills.",
+    audience: "individual",
+    is_active: true,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "mock-2",
+    title: "HR Operations Associate",
+    department: "HR Services",
+    location: "Bengaluru (On-site)",
+    job_type: "Full-time",
+    experience: "1-3 years",
+    salary_range: "₹5 - ₹8 LPA",
+    description: "Join our embedded client services team to handle payroll, onboarding, and documentation. Perfect role for an operational expert looking to gain hands-on corporate HR experience.",
+    requirements: "Knowledge of labor laws, payroll processing tools.",
+    audience: "individual",
+    is_active: true,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "mock-3",
+    title: "Head of Talent Management",
+    department: "HR Advisory",
+    location: "Delhi NCR",
+    job_type: "Full-time",
+    experience: "10+ years",
+    salary_range: "₹25 - ₹35 LPA",
+    description: "Lead talent strategy, competency mapping, and organizational development initiatives for a high-growth fintech client. Expected to run full enterprise RPO.",
+    requirements: "Strategic HR management, leadership experience.",
+    audience: "corporate",
+    is_active: true,
+    created_at: new Date().toISOString()
+  }
+];
+
 function HomePage() {
   useReveal();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -71,7 +116,18 @@ function HomePage() {
 
   useEffect(() => {
     supabase.from("jobs").select("*").eq("is_active", true).order("created_at", { ascending: false })
-      .then(({ data }) => { if (data) setJobs(data as Job[]); });
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setJobs(data as Job[]);
+        } else {
+          setJobs(MOCK_JOBS);
+        }
+      })
+      .catch((err) => {
+        console.error("Supabase load error, falling back to mock jobs:", err);
+        setJobs(MOCK_JOBS);
+      });
   }, []);
 
   const filtered = useMemo(() => {
@@ -100,8 +156,8 @@ function HomePage() {
               <Sparkles className="w-3.5 h-3.5" /> Talent · Trust · Transformation
             </span>
             <h1 className="mt-6 font-display font-extrabold text-5xl md:text-7xl leading-[1.02] tracking-tight">
-              Where <span className="text-gradient">talent</span><br />
-              meets <span className="shimmer-text">opportunity</span>.
+              Building <span className="text-gradient">Organisations</span><br />
+              Through <span className="shimmer-text">People</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-xl">
               PeopleQuest Data Services partners with ambitious professionals and forward-thinking
@@ -111,7 +167,7 @@ function HomePage() {
               <a href="#individuals" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-gradient-brand text-brand-foreground font-semibold shadow-[var(--shadow-glow)] hover:scale-105 transition-transform">
                 <User className="w-4 h-4" /> I'm looking for a job
               </a>
-              <a href="#corporates" className="inline-flex items-center gap-2 h-12 px-6 rounded-full glass-dark text-primary-foreground font-semibold hover:scale-105 transition-transform">
+              <a href="#corporates" className="inline-flex items-center gap-2 h-12 px-6 rounded-full glass-dark text-white font-semibold hover:scale-105 transition-transform">
                 <Building2 className="w-4 h-4" /> We're hiring talent
               </a>
             </div>
@@ -120,7 +176,7 @@ function HomePage() {
           {/* 3D scene — orbiting cards */}
           <div className="relative h-[420px] hidden lg:block reveal">
             <div className="absolute inset-0 perspective-1200">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-96 rounded-3xl bg-gradient-ink text-primary-foreground shadow-[var(--shadow-3d)] float-3d p-8 flex flex-col justify-between">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-96 rounded-3xl bg-gradient-ink text-white shadow-[var(--shadow-3d)] float-3d p-8 flex flex-col justify-between">
                 <div>
                   <div className="text-xs uppercase tracking-widest opacity-70">Live placement</div>
                   <div className="mt-3 text-2xl font-bold">Senior PM<br />→ Razorpay</div>
@@ -187,7 +243,7 @@ function HomePage() {
                       <div className="mt-1 text-xs text-muted-foreground">Hover to learn more</div>
                     </div>
                   </div>
-                  <div className="flip-face flip-back rounded-2xl bg-gradient-ink text-primary-foreground p-6 shadow-[var(--shadow-3d)] flex items-center">
+                  <div className="flip-face flip-back rounded-2xl bg-gradient-ink text-white p-6 shadow-[var(--shadow-3d)] flex items-center">
                     <p className="text-sm">{p.desc}</p>
                   </div>
                 </div>
@@ -198,7 +254,7 @@ function HomePage() {
       </section>
 
       {/* CORPORATES section with 3D tilt board */}
-      <section id="corporates" className="py-24 md:py-32 bg-gradient-ink text-primary-foreground relative overflow-hidden">
+      <section id="corporates" className="py-24 md:py-32 bg-gradient-ink text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-30 pointer-events-none">
           <div className="absolute top-10 right-10 w-80 h-80 rounded-full bg-brand/30 blur-3xl animate-blob" />
           <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-gold/20 blur-3xl animate-blob" style={{ animationDelay: "3s" }} />
@@ -210,7 +266,7 @@ function HomePage() {
               <h2 className="mt-4 text-4xl md:text-5xl font-display font-bold tracking-tight">
                 Build the team<br />that builds your <span className="text-gradient">future</span>.
               </h2>
-              <p className="mt-4 text-primary-foreground/80 text-lg">
+              <p className="mt-4 text-white/80 text-lg">
                 From single critical hires to embedded RPO across thousands of roles —
                 we design the talent engine your business actually needs.
               </p>
@@ -219,7 +275,7 @@ function HomePage() {
                   <div key={p.title} className="rounded-xl glass-dark p-5 hover-lift">
                     <p.icon className="w-5 h-5 text-gold mb-2" />
                     <div className="font-semibold">{p.title}</div>
-                    <div className="text-xs text-primary-foreground/70 mt-1">{p.desc}</div>
+                    <div className="text-xs text-white/70 mt-1">{p.desc}</div>
                   </div>
                 ))}
               </div>
@@ -241,7 +297,7 @@ function HomePage() {
                   ].map((m) => (
                     <div key={m.l} className="rounded-lg bg-white/5 p-3">
                       <div className="text-2xl font-bold text-gradient">{m.v}</div>
-                      <div className="text-[10px] uppercase tracking-wider text-primary-foreground/60">{m.l}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-white/60">{m.l}</div>
                     </div>
                   ))}
                 </div>
@@ -354,27 +410,36 @@ function ApplyForm({ jobs }: { jobs: Job[] }) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const payload = {
-      audience_type: tab,
-      job_id: form.job_id || null,
-      full_name: form.full_name,
-      email: form.email,
-      phone: form.phone,
-      company_name: form.company_name || null,
-      company_size: tab === "corporate" ? form.company_size || null : null,
-      hiring_needs: tab === "corporate" ? form.hiring_needs || null : null,
-      current_ctc: tab === "individual" ? form.current_ctc || null : null,
-      expected_ctc: tab === "individual" ? form.expected_ctc || null : null,
-      notice_period: tab === "individual" ? form.notice_period || null : null,
-      experience_years: tab === "individual" ? form.experience_years || null : null,
-      cover_letter: form.cover_letter || null,
-    };
-    const { error } = await supabase.from("applications").insert(payload);
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    setDone(true);
-    toast.success("Application submitted — we'll be in touch.");
-    sessionStorage.removeItem("pq_job");
+    try {
+      const payload = {
+        audience_type: tab,
+        job_id: form.job_id || null,
+        full_name: form.full_name,
+        email: form.email,
+        phone: form.phone,
+        company_name: form.company_name || null,
+        company_size: tab === "corporate" ? form.company_size || null : null,
+        hiring_needs: tab === "corporate" ? form.hiring_needs || null : null,
+        current_ctc: tab === "individual" ? form.current_ctc || null : null,
+        expected_ctc: tab === "individual" ? form.expected_ctc || null : null,
+        notice_period: tab === "individual" ? form.notice_period || null : null,
+        experience_years: tab === "individual" ? form.experience_years || null : null,
+        cover_letter: form.cover_letter || null,
+      };
+      const { error } = await supabase.from("applications").insert(payload);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        setDone(true);
+        toast.success("Application submitted — we'll be in touch.");
+        sessionStorage.removeItem("pq_job");
+      }
+    } catch (err) {
+      console.error("Submit error:", err);
+      toast.error((err as Error).message || "An unexpected network error occurred.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (

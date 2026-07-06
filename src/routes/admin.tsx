@@ -92,10 +92,15 @@ function AdminPage() {
   }), [jobs, apps]);
 
   const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("applications").update({ status }).eq("id", id);
-    if (error) return toast.error(error.message);
-    setApps(x => x.map(a => a.id === id ? { ...a, status } : a));
-    toast.success("Status updated");
+    try {
+      const { error } = await supabase.from("applications").update({ status }).eq("id", id);
+      if (error) throw error;
+      setApps(x => x.map(a => a.id === id ? { ...a, status } : a));
+      toast.success("Status updated");
+    } catch (err) {
+      console.error(err);
+      toast.error((err as Error).message || "Failed to update status");
+    }
   };
 
   const exportCSV = () => {
@@ -135,20 +140,25 @@ function AdminPage() {
     e.preventDefault();
     if (!user) return;
     const payload = { ...form, created_by: user.id };
-    if (editing) {
-      const { error, data } = await supabase.from("jobs").update(payload).eq("id", editing).select().single();
-      if (error) return toast.error(error.message);
-      setJobs((x) => x.map((j) => (j.id === editing ? (data as Job) : j)));
-      toast.success("Job updated");
-    } else {
-      const { error, data } = await supabase.from("jobs").insert(payload).select().single();
-      if (error) return toast.error(error.message);
-      setJobs((x) => [data as Job, ...x]);
-      toast.success("Job posted");
+    try {
+      if (editing) {
+        const { error, data } = await supabase.from("jobs").update(payload).eq("id", editing).select().single();
+        if (error) throw error;
+        setJobs((x) => x.map((j) => (j.id === editing ? (data as Job) : j)));
+        toast.success("Job updated");
+      } else {
+        const { error, data } = await supabase.from("jobs").insert(payload).select().single();
+        if (error) throw error;
+        setJobs((x) => [data as Job, ...x]);
+        toast.success("Job posted");
+      }
+      setForm({ ...empty });
+      setEditing(null);
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
+      toast.error((err as Error).message || "Failed to save job");
     }
-    setForm({ ...empty });
-    setEditing(null);
-    setShowForm(false);
   };
 
   const edit = (j: Job) => {
@@ -165,16 +175,27 @@ function AdminPage() {
 
   const del = async (id: string) => {
     if (!confirm("Delete this job?")) return;
-    const { error } = await supabase.from("jobs").delete().eq("id", id);
-    if (error) return toast.error(error.message);
-    setJobs((x) => x.filter((j) => j.id !== id));
-    toast.success("Deleted");
+    try {
+      const { error } = await supabase.from("jobs").delete().eq("id", id);
+      if (error) throw error;
+      setJobs((x) => x.filter((j) => j.id !== id));
+      toast.success("Deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error((err as Error).message || "Failed to delete job");
+    }
   };
 
   const toggle = async (j: Job) => {
-    const { error } = await supabase.from("jobs").update({ is_active: !j.is_active }).eq("id", j.id);
-    if (error) return toast.error(error.message);
-    setJobs((x) => x.map((y) => (y.id === j.id ? { ...y, is_active: !y.is_active } : y)));
+    try {
+      const { error } = await supabase.from("jobs").update({ is_active: !j.is_active }).eq("id", j.id);
+      if (error) throw error;
+      setJobs((x) => x.map((y) => (y.id === j.id ? { ...y, is_active: !y.is_active } : y)));
+      toast.success(j.is_active ? "Job deactivated" : "Job activated");
+    } catch (err) {
+      console.error(err);
+      toast.error((err as Error).message || "Failed to toggle status");
+    }
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
@@ -206,7 +227,7 @@ function AdminPage() {
       <header className="border-b border-border/60 bg-card/60 backdrop-blur sticky top-0 z-40">
         <div className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-ink text-primary-foreground inline-flex items-center justify-center font-bold">PQ</div>
+            <div className="w-9 h-9 rounded-xl bg-gradient-ink text-white inline-flex items-center justify-center font-bold">PQ</div>
             <div>
               <div className="font-display font-bold text-sm leading-tight">Admin Console</div>
               <div className="text-xs text-muted-foreground">{user?.email}</div>

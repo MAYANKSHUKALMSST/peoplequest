@@ -325,9 +325,9 @@ function DetailPanel({ service, onClose }: { service: Service; onClose: () => vo
         <div className="p-7 flex flex-col justify-between gap-6">
           <div>
             <h3 className="font-display font-semibold text-base mb-4 text-foreground">Key outcomes</h3>
-            <div className="rounded-2xl bg-gradient-ink text-primary-foreground p-5 space-y-3">
+            <div className="rounded-2xl bg-gradient-ink text-white p-5 space-y-3">
               {service.detail.outcomes.map((o) => (
-                <div key={o} className="flex items-start gap-2 text-sm text-primary-foreground/90">
+                <div key={o} className="flex items-start gap-2 text-sm text-white/90">
                   <CheckCircle2 size={14} className="text-brand mt-0.5 shrink-0" />
                   {o}
                 </div>
@@ -477,10 +477,10 @@ function ServicesPage() {
         </div>
 
         {/* CTA */}
-        <div className="mt-16 reveal rounded-3xl bg-gradient-ink text-primary-foreground p-10 md:p-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="mt-16 reveal rounded-3xl bg-gradient-ink text-white p-10 md:p-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <h3 className="font-display text-2xl md:text-3xl font-bold">Let's build your team.</h3>
-            <p className="mt-2 text-primary-foreground/75 max-w-lg">Share your hiring brief — we'll come back with a shortlist within 48 hours.</p>
+            <p className="mt-2 text-white/75 max-w-lg">Share your hiring brief — we'll come back with a shortlist within 48 hours.</p>
           </div>
           <Link to="/contact" className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-gradient-brand text-brand-foreground text-sm font-semibold hover:scale-105 transition-transform">
             Contact us <ArrowRight size={16} />

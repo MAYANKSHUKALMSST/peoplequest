@@ -81,7 +81,7 @@ function ContactPage() {
           </p>
         </div>
 
-        <div className="reveal md:col-span-2 rounded-2xl border border-border/60 bg-gradient-ink text-primary-foreground p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="reveal md:col-span-2 rounded-2xl border border-border/60 bg-gradient-ink text-white p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Globe size={20} className="text-brand" />
             <span className="font-medium">peoplequestds.com</span>
